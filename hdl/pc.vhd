@@ -7,6 +7,7 @@ entity pc is
 		clk : in std_logic;
 		rst	: in std_logic;
 		en 	: in std_logic;
+		oe 	: in std_logic;
 		ld	: in std_logic;
 		input: in std_logic_vector(3 downto 0);
 		output: out std_logic_vector(3 downto 0)
@@ -34,5 +35,5 @@ begin
 
 end process;
 
-output <= count;
+output <= count when oe = '1' else "ZZZZ";
 end behave;

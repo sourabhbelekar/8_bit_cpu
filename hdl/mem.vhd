@@ -62,6 +62,8 @@ begin
 		
 		if oe = '1' then
 			data_out <= mem_obj(to_integer(unsigned(addr_in)));
+		else
+			data_out<="ZZZZZZZZ";
 		end if;
 	end if;
 end process;

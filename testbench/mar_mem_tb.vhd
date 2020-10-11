@@ -62,17 +62,40 @@ end process;
 
 process
 begin
-rst_sig<='0';
-mar_input<="0001";
+--rst_sig<='0';
+--mar_input<="0001";
+--load_mar<='1';
+--wait for clk_period;
+--load_mar<='0';
+--mem_input_sig<="11111111";
+--mem_ld_sig<='1';
+--wait for clk_period;
+--mem_ld_sig<='0';
+--wait for clk_period;
+--mem_en_sig<='1';
+
+mar_input<="0000";
 load_mar<='1';
+mem_en_sig<='0';
 wait for clk_period;
 load_mar<='0';
-mem_input_sig<="11111111";
-mem_ld_sig<='1';
-wait for clk_period;
-mem_ld_sig<='0';
-wait for clk_period;
 mem_en_sig<='1';
+wait for clk_period;
+mar_input<="0001";
+load_mar<='1';
+mem_en_sig<='0';
+wait for clk_period;
+load_mar<='0';
+mem_en_sig<='1';
+wait for clk_period;
+mar_input<="0010";
+load_mar<='1';
+mem_en_sig<='0';
+wait for clk_period;
+load_mar<='0';
+mem_en_sig<='1';
+wait for clk_period;
+
 
 wait;
 
