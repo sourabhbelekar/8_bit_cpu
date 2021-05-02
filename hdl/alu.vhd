@@ -24,9 +24,9 @@ begin
 	
 	process(reg_a_in,reg_b_in,op)
 	begin
-		if op = '1' then
+		if op = '0' then
 			result <= ext(reg_a_in,9) + ext(reg_b_in,9);
-		elsif op = '0' then
+		elsif op = '1' then
 			result <= ext(reg_a_in,9) - ext(reg_b_in,9);
 		end if;
 	end process;
