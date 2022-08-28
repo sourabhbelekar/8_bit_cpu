@@ -133,7 +133,7 @@ output=> main_bus(3 downto 0)
 
 
 cu_inst: control_unit port map(
-clk =>clk_sig,
+clk => not clk,
 rst =>rst,
 inst => inst_out,
 do => cu_out_sig

@@ -53,20 +53,23 @@ type mem_type is array(0 to 15) of std_logic_vector(7 downto 0);
 signal mem_obj:mem_type :=(x"0E",x"2F",x"1E",x"5E",x"41",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"01");
 begin
 
-process(clk)
-begin
-	if rising_edge(clk) then
-		if load = '1' then
-			mem_obj(to_integer(unsigned(addr_in)))<=data_in;
-		end if;
-		
-		if oe = '1' then
-			data_out <= mem_obj(to_integer(unsigned(addr_in)));
-		else
-			data_out<="ZZZZZZZZ";
-		end if;
-	end if;
-end process;
+--process(clk)
+--begin
+--	if rising_edge(clk) then
+--		if load = '1' then
+--			mem_obj(to_integer(unsigned(addr_in)))<=data_in;
+--		end if;
+--		
+--		if oe = '1' then
+--			data_out <= mem_obj(to_integer(unsigned(addr_in)));
+--		else
+--			data_out<="ZZZZZZZZ";
+--		end if;
+--	end if;
+--end process;
+
+mem_obj(to_integer(unsigned(addr_in)))<=data_in when load = '1';
+data_out <= mem_obj(to_integer(unsigned(addr_in))) when oe = '1' else (others=>'Z');
 
 end behave;
 
