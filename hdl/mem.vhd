@@ -23,7 +23,7 @@ end entity;
 architecture behave of mem is
 
 type mem_type is array(0 to 15) of std_logic_vector(7 downto 0);
-
+signal do_i : std_logic_vector(7 downto 0);
 
 --function init(file_name:string) return mem_type is
 --
@@ -50,7 +50,7 @@ type mem_type is array(0 to 15) of std_logic_vector(7 downto 0);
 --end function init;
 
 
-signal mem_obj:mem_type :=(x"0E",x"2F",x"1E",x"5E",x"41",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"01");
+signal mem_obj:mem_type ;-- :=(x"0E",x"2F",x"1E",x"5E",x"41",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"01");
 begin
 
 --process(clk)
@@ -68,8 +68,31 @@ begin
 --	end if;
 --end process;
 
-mem_obj(to_integer(unsigned(addr_in)))<=data_in when load = '1';
-data_out <= mem_obj(to_integer(unsigned(addr_in))) when oe = '1' else (others=>'Z');
+
+process (clk)
+begin
+	if rising_edge(clk) then
+		if load = '1' then
+			mem_obj(to_integer(unsigned(addr_in)))<=data_in ;
+		end if;
+	end if;
+end process;
+
+--mem_obj(to_integer(unsigned(addr_in)))<=data_in when load = '1';
+
+--process (clk)
+--begin
+--	if rising_edge(clk) then
+--		if oe = '1' then
+--			do_i <= mem_obj(to_integer(unsigned(addr_in))) ;
+--		end if;
+--	end if;
+--end process;
+
+
+do_i <= mem_obj(to_integer(unsigned(addr_in))) ;
+
+data_out <= do_i when oe = '1' else (others=>'Z');
 
 end behave;
 

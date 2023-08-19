@@ -6,9 +6,13 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity cpu is 
 port(
-clk : in std_logic;
-rst : in std_logic;
-op	 : out std_logic_vector(7 downto 0)
+	clk : in std_logic;
+	rst : in std_logic;
+	mem_prog	: IN std_logic;
+	ext_mem_clk	: IN std_logic;
+	ext_mem_addr: IN std_logic_vector(3 downto 0);
+	ext_mem_bus	: IN std_logic_vector(7 downto 0);
+	op	 : out std_logic_vector(7 downto 0)
  
 );
 end entity;
@@ -87,13 +91,14 @@ do : out std_logic_vector(16 downto 0)
 );
 end component;
 
-
-signal main_bus: std_logic_vector(7 downto 0);
-
 signal clk_sig : std_logic;
+signal main_bus: std_logic_vector(7 downto 0);
+signal hlt_sig:std_logic:='0';
+
 
 signal inst_out: std_logic_vector(3 downto 0);
 signal cu_out_sig: std_logic_vector(16 downto 0);
+signal mar_ld_sig : std_logic :='0';
 signal mar_mem_sig: std_logic_vector(3 downto 0);
 signal inst_out_sig:std_logic_vector(7 downto 0);
 signal reg_a_alu : std_logic_vector(7 downto 0);
@@ -104,9 +109,14 @@ signal halt_sig : std_logic;
 signal pc_en_sig : std_logic;
 signal pc_oe_sig : std_logic;
 signal pc_ld_sig : std_logic;
-signal mar_ld_sig: std_logic;
-signal mem_ld_sig: std_logic;
-signal mem_oe_sig: std_logic;
+
+signal mem_write_en : std_logic :='0';
+signal mem_ld_sig : std_logic :='0';
+signal mem_oe_sig : std_logic :='0';
+signal mem_addr : std_logic_vector(3 downto 0);
+signal mem_in_bus : std_logic_vector(7 downto 0);
+signal mem_clk	: std_logic;
+
 signal inst_ld_sig:std_logic;
 signal inst_oe_sig:std_logic;
 signal reg_a_ld_sig:std_logic;
@@ -149,12 +159,12 @@ output=> mar_mem_sig
 
 
 mem_inst: mem port map(
-clk=>clk_sig,
-load => mem_ld_sig,
-oe => mem_oe_sig,
-data_in => main_bus,
-addr_in => mar_mem_sig,
-data_out => main_bus
+clk		=>	mem_clk,
+load 	=> 	mem_write_en,
+oe 		=> 	mem_oe_sig,
+data_in => 	mem_in_bus,
+addr_in => 	mem_addr,
+data_out=> 	main_bus
 );
 
 
@@ -214,8 +224,11 @@ res_out => main_bus
 );
 
 
-clk_sig <= clk and (not halt_sig);
-
+clk_sig 		<= clk and (not mem_prog) and (not hlt_sig);
+mem_clk 		<= clk when (mem_prog = '0') else ext_mem_clk;
+mem_addr 		<= mar_mem_sig when (mem_prog = '0') else ext_mem_addr;
+mem_write_en 	<= mem_ld_sig when (mem_prog = '0') else '1';
+mem_in_bus		<= main_bus when (mem_prog = '0') else ext_mem_bus;
 
 
 halt_sig 	<= cu_out_sig(16);
